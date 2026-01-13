@@ -2,7 +2,7 @@
 import { mulberry32, shuffleArray } from './utils.js';
 import { showToast } from './ui-components.js';
 
-const MAX_NUM = 25;
+const MAX_NUM = 30;
 
 export function generatePuzzle(seedStr) {
     let h = 2166136261 >>> 0;

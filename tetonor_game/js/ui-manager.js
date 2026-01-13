@@ -52,7 +52,12 @@ export function renderInventory(operands) {
             hash |= 0;
         }
         const rngVal = Math.abs(hash) % 100;
-        const isHidden = rngVal < 25;
+        let isHidden = rngVal < 25;
+
+        // Never hide the last token
+        if (id === operands.length - 1) {
+            isHidden = false;
+        }
 
         if (isHidden) {
             token.classList.add('hidden-token');
