@@ -1,6 +1,5 @@
 # Tetonor Diario 
 
-![Banner de Tetonor](tetonor_game/assets/banner.png)
 
 **Tetonor Diario** es un elegante juego de rompecabezas matemático diario que desafía tu capacidad de cálculo, lógica y deducción. Inspirado en acertijos numéricos clásicos, Tetonor ofrece una experiencia premium con un diseño moderno y minimalista.
 
