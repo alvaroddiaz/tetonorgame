@@ -16,6 +16,17 @@
         <div class="app-container">
             <header>
                 <div class="header-top">
+                    <div class="header-left">
+                        <a href="https://www.buymeacoffee.com/alvaroddiaz" target="_blank" class="bmac-link"
+                            title="Apóyame con un café">
+                            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M23.901 13.98s-.336-.01-.336-.008v.01l.01.002s-.012-.004-.01-.002a2.81 2.81 0 0 1 .436.06c.068.01.13.028.196.042l.064.016c.07.016.14.032.21.054a3.1 3.1 0 0 1 .374.154c.05.026.096.05.14.078.076.046.15.094.22.146.012.008.026.016.038.026.046.034.09.07.132.106.01.008.02.016.03.024.114.1.218.21.312.33.006.008.012.016.016.02a3.3 3.3 0 0 1 .536 1.08c.012.052.022.106.032.16.01.058.016.116.02.176a3.46 3.46 0 0 1-.02.668c-.004.05-.01.096-.018.146a3.52 3.52 0 0 1-.168.64c-.012.032-.022.064-.038.096-.058.14-.132.274-.216.4-.012.018-.026.034-.038.05-.132.196-.288.374-.464.53-.022.022-.046.04-.068.062a3.84 3.84 0 0 1-.776.544c-.032.016-.062.032-.096.046-.1.042-.204.076-.308.11a4.26 4.26 0 0 1-.684.148c-.012.002-.026.004-.038.006-.41.046-.826.046-1.238.046H20.47c-.504 1.58-1.558 3.518-3.048 4.792-1.124.962-2.5 1.572-3.956 1.63a7.86 7.86 0 0 1-3.664-.69 8.24 8.24 0 0 1-2.906-2.18c-.378-.45-.63-.824-.76-1.116-.27-.6-.356-1.21-.49-1.84a16.89 16.89 0 0 1-.228-2.618l-.008-.43v-.432l.004-1.22c.002-.452.01-.904.016-1.356v-.01c.006-.39.014-.78.026-1.17.026-.826.06-1.65.262-2.454.084-.33.2-.646.368-.94a4.42 4.42 0 0 1 .632-.87 4.1 4.1 0 0 1 2.87-1.3l.4-.022c.162-.008.324-.014.488-.016h7.9c.732 0 1.458.12 2.14.33.158.048.314.108.462.17.158.07.31.144.456.234a3.81 3.81 0 0 1 1.054 1.05c.088.132.17.272.24.416.072.152.13.31.18.472.046.15.086.302.116.458.048.24.074.486.082.732v.03zM13.279 23.36c2.406-.11 4.542-1.996 5.486-4.64l.05-.14v-9.394c-.02-.002-.04-.002-.062-.002h-7.9c-.046.002-.092.004-.138.006l-.116.008c-1.272.106-2.25 1.134-2.31 2.4l-.01.21-.01.42c-.004.28-.008.56-.012.842l-.004 1.25.002.32c.004.384.016.766.04 1.148.016.27.04.536.08.802.19.98.536 1.942 1.39 2.592.834.636 1.838.99 2.89 1.142.176.026.356.042.532.046h.102l.1-.01zm8.736-9.404v5.334c.142 0 .284-.002.426-.016.284-.03.562-.084.826-.18.428-.158.8-.466 1.058-.85.12-.178.2-.38.252-.59a2.53 2.53 0 0 0-.012-1.372 2.31 2.31 0 0 0-.256-.582 2.12 2.12 0 0 0-.698-.732 2.45 2.45 0 0 0-.67-.32c-.3-.082-.614-.108-.926-.092z"
+                                    fill="currentColor" />
+                            </svg>
+                        </a>
+                        <button id="help-toggle" title="Cómo jugar">?</button>
+                    </div>
                     <h1>Tetonor <span class="highlight">Diario</span></h1>
                     <button id="scratchpad-toggle" title="Lienzo de notas">✎</button>
                 </div>
@@ -68,6 +79,59 @@
             </div>
             <div class="history-grid" id="history-grid"></div>
             <button id="close-stats" class="btn-primary" style="margin-top:20px">Cerrar</button>
+        </div>
+    </div>
+
+    <div id="help-modal" class="modal hidden">
+        <div class="help-container">
+            <button id="close-help-top" class="close-modal-btn">&times;</button>
+            <h2>Cómo jugar a Tetonor</h2>
+
+            <div class="help-content">
+                <div class="help-step">
+                    <img src="assets/how_to_drag.png" alt="Arrastrar números" class="help-img" id="img-drag">
+                    <div class="help-text">
+                        <h3>1. Completa la operación</h3>
+                        <p>Arrastra los números del inventario a los huecos vacíos para que la operación (suma o
+                            multiplicación) dé el resultado indicado arriba.</p>
+                    </div>
+                </div>
+
+                <div class="help-step">
+                    <img src="assets/how_to_op.png" alt="Cambiar operador" class="help-img" id="img-op">
+                    <div class="help-text">
+                        <h3>2. Cambia el operador</h3>
+                        <p>Pulsa en el símbolo central (<strong>?</strong>, <strong>+</strong> o <strong>x</strong>)
+                            para alternar entre suma y multiplicación hasta encontrar la correcta.</p>
+                    </div>
+                </div>
+
+                <div class="help-step">
+                    <img src="assets/how_to_guess.png" alt="Adivinar secretos" class="help-img" id="img-guess">
+                    <div class="help-text">
+                        <h3>3. Descubre los secretos</h3>
+                        <p>Algunos números son secretos (<strong>?</strong>). Pulsa sobre ellos para escribir tu
+                            predicción. ¡Cada número se usa exactamente 2 veces!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="help-rules">
+                <h3>Reglas de Tetonor</h3>
+                <ul>
+                    <li><strong>Regla de Oro:</strong> Por cada par de números que <strong>multipliquen</strong> un
+                        resultado, ese mismo par debe <strong>sumar</strong> otro resultado en otra casilla del tablero.
+                    </li>
+                    <li><strong>Equilibrio:</strong> Debe haber exactamente el mismo número de operaciones de suma (+)
+                        que de multiplicación (x).</li>
+                    <li><strong>Inventario:</strong> Cada número del inventario se utiliza exactamente <strong>2
+                            veces</strong> en el tablero.</li>
+                    <li><strong>Adivina:</strong> Los números marcados con <strong>?</strong> son parte del inventario,
+                        ¡pero están ocultos!</li>
+                </ul>
+            </div>
+
+            <button id="close-help" class="btn-primary">¡Entendido!</button>
         </div>
     </div>
 

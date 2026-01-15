@@ -37,14 +37,18 @@ body {
     height: 100vh;
     padding: 20px;
     box-sizing: border-box;
-    gap: 0;
-    /* Let flex/margins handle gap for better transitions */
+    /* Fixed gap during shift handled via transition */
     overflow: hidden;
     background-color: var(--bg-color);
+    transition: gap 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scratchpad-active .main-wrapper {
+    gap: 40px;
 }
 
 .app-container {
-    flex: 0 0 auto;
+    flex: 1;
     width: 100%;
     max-width: 900px;
     height: 100vh;
@@ -55,14 +59,11 @@ body {
     padding: 1.5vh 0;
     box-sizing: border-box;
     position: relative;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: max-width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .scratchpad-active .app-container {
-    flex: 1;
     max-width: 800px;
-    margin-right: 40px;
-    /* Fixed gap during shift */
 }
 
 .scratchpad-container {
@@ -74,19 +75,22 @@ body {
     display: flex;
     flex-direction: column;
     box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
-    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, border-width 0.1s;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
     flex-shrink: 0;
     opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    border: 1px solid transparent;
 }
 
 .scratchpad-active .scratchpad-container {
-    width: 100%;
-    /* Take available space alongside board */
-    max-width: 600px;
-    border: 2px solid #e2e8f0;
+    width: 600px;
     opacity: 1;
     pointer-events: all;
+    visibility: visible;
+    border-color: #e2e8f0;
 }
 
 .scratchpad-container>* {
@@ -176,6 +180,64 @@ header {
 
 #scratchpad-toggle:hover {
     transform: scale(1.1);
+}
+
+.header-left {
+    position: absolute;
+    left: 0;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+#help-toggle {
+    background: #f1f5f9;
+    color: var(--text-secondary);
+    border: 1px solid var(--card-border);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#help-toggle:hover {
+    background: white;
+    transform: scale(1.1);
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+.bmac-link {
+    text-decoration: none;
+    background: #FFDD00;
+    color: #000000;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid #eab308;
+}
+
+.bmac-link svg {
+    width: 22px;
+    height: 22px;
+}
+
+.bmac-link:hover {
+    transform: scale(1.15) rotate(10deg);
+    background: #ffea00;
+    box-shadow: 0 6px 15px rgba(255, 221, 0, 0.4);
 }
 
 /* Scratchpad Components - Refined */
@@ -730,6 +792,124 @@ header h1 {
 
 .btn-secondary:hover {
     background: #cbd5e1;
+}
+
+/* Help Modal Styling */
+.help-container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    color: var(--text-primary);
+    max-width: 95%;
+    width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+    position: relative;
+    animation: slideUp 0.3s ease-out;
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.help-container h2 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+}
+
+.help-content {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.help-step {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    text-align: left;
+}
+
+.help-img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    flex-shrink: 0;
+}
+
+.help-text h3 {
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+    color: var(--accent);
+}
+
+.help-text p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+}
+
+.help-rules {
+    background: #f1f5f9;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: left;
+    margin-bottom: 25px;
+    border: 1px solid #e2e8f0;
+}
+
+.help-rules h3 {
+    margin: 0 0 12px 0;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    text-align: center;
+}
+
+.help-rules ul {
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.help-rules li {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+.help-rules li strong {
+    color: var(--accent);
+}
+
+@media (max-width: 480px) {
+    .help-step {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .help-img {
+        width: 120px;
+        height: 120px;
+    }
 }
 
 @media (max-width: 480px) {

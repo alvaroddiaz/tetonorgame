@@ -32,6 +32,18 @@ function initGame() {
     document.getElementById('close-stats').onclick = () => {
         document.getElementById('stats-modal').classList.add('hidden');
     };
+
+    // Help Modal Logic
+    const helpModal = document.getElementById('help-modal');
+    document.getElementById('help-toggle').onclick = () => {
+        helpModal.classList.remove('hidden');
+    };
+    document.getElementById('close-help').onclick = () => {
+        helpModal.classList.add('hidden');
+    };
+    document.getElementById('close-help-top').onclick = () => {
+        helpModal.classList.add('hidden');
+    };
 }
 
 function showStatsModal(isWin) {
