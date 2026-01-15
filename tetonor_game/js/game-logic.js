@@ -11,13 +11,21 @@ export function generatePuzzle(seedStr) {
 
     const pairs = [];
     const usedPairs = new Set();
+    const freq = {}; // Track number frequency
+
     while (pairs.length < 8) {
         const a = Math.floor(rng() * MAX_NUM) + 1;
         const b = Math.floor(rng() * MAX_NUM) + 1;
+
+        // Skip if either number already appears 3 times
+        if ((freq[a] || 0) >= 2 || (freq[b] || 0) >= 2) continue;
+
         const pairKey = a < b ? `${a},${b}` : `${b},${a}`;
         if (!usedPairs.has(pairKey)) {
             usedPairs.add(pairKey);
             pairs.push([a, b]);
+            freq[a] = (freq[a] || 0) + 1;
+            freq[b] = (freq[b] || 0) + 1;
         }
     }
 

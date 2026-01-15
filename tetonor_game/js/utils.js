@@ -10,7 +10,6 @@ export function getDailySeed() {
     return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 }
 
-// Pseudo-random number generator
 export function mulberry32(a) {
     return function () {
         var t = a += 0x6D2B79F5;
@@ -25,8 +24,7 @@ export function shuffleArray(array, rng) {
     while (currentIndex != 0) {
         randomIndex = Math.floor(rng() * currentIndex);
         currentIndex--;
-        [array[currentIndex], array[randomIndex]] = [
-            array[randomIndex], array[currentIndex]];
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
     }
     return array;
 }

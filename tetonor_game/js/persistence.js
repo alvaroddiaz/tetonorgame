@@ -118,9 +118,6 @@ export function restoreState(savedState, initialOperands, createTokenInSlot) {
             if (count === 0) {
                 invToken.classList.add('used-up');
                 invToken.draggable = false;
-                if (invToken.classList.contains('user-guessed')) {
-                    // Ensure user-guessed tokens also get the badge/state
-                }
             }
         }
     });

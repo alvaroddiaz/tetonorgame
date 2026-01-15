@@ -6,18 +6,16 @@ let currentColor = '#000';
 
 export function initScratchpad() {
     canvas = document.getElementById('scratchpad-canvas');
+    if (!canvas) return;
     ctx = canvas.getContext('2d');
 
-    // Auto-resize canvas
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    // Mouse events
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mousemove', draw);
     window.addEventListener('mouseup', stopDrawing);
 
-    // Touch events for mobile
     canvas.addEventListener('touchstart', (e) => {
         const touch = e.touches[0];
         startDrawing({ clientX: touch.clientX, clientY: touch.clientY });
@@ -29,18 +27,12 @@ export function initScratchpad() {
         draw({ clientX: touch.clientX, clientY: touch.clientY });
     }, { passive: false });
 
-    // Tools logic
     document.querySelectorAll('.tool-btn').forEach(btn => {
-        btn.onclick = () => {
-            currentColor = btn.dataset.color;
-        };
+        btn.onclick = () => { currentColor = btn.dataset.color; };
     });
 
     document.getElementById('clear-scratchpad').onclick = () => {
-        ctx.save();
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.restore();
     };
 
     document.getElementById('scratchpad-toggle').onclick = toggleScratchpad;
@@ -61,8 +53,7 @@ function resizeCanvas() {
 
 export function toggleScratchpad() {
     document.body.classList.toggle('scratchpad-active');
-    // Resize after transition to ensure correct dimensions
-    setTimeout(resizeCanvas, 450);
+    setTimeout(resizeCanvas, 500);
 }
 
 function startDrawing(e) {
@@ -80,9 +71,7 @@ function draw(e) {
     ctx.stroke();
 }
 
-function stopDrawing() {
-    drawing = false;
-}
+function stopDrawing() { drawing = false; }
 
 function getMousePos(e) {
     const rect = canvas.getBoundingClientRect();

@@ -25,58 +25,39 @@ function initGame() {
         restoreState(savedState, puzzleData.operands, createTokenInSlot);
     }
 
-    document.getElementById('check-btn').addEventListener('click', () => {
-        validateBoard(puzzleData, updateStats, showStatsModal);
+    document.getElementById('check-solution').addEventListener('click', () => {
+        validateBoard(puzzleData, updateStats, (isWin) => showStatsModal(isWin));
     });
+
+    document.getElementById('close-stats').onclick = () => {
+        document.getElementById('stats-modal').classList.add('hidden');
+    };
 }
 
 function showStatsModal(isWin) {
     const stats = getStats();
-    const modal = document.getElementById('modal');
-
-    const winPct = stats.gamesPlayed > 0 ? Math.round((stats.gamesWon / stats.gamesPlayed) * 100) : 0;
-
-    let content = `
-        <div class="stats-container">
-            <h2>Estadísticas</h2>
-            <div class="stats-grid">
-                <div class="stat-box"><div class="stat-val">${stats.gamesPlayed}</div><div class="stat-label">Jugadas</div></div>
-                <div class="stat-box"><div class="stat-val">${winPct}%</div><div class="stat-label">% Victorias</div></div>
-                <div class="stat-box"><div class="stat-val">${stats.currentStreak}</div><div class="stat-label">Racha</div></div>
-                <div class="stat-box"><div class="stat-val">${stats.maxStreak}</div><div class="stat-label">Max Racha</div></div>
-            </div>
-            
-            <h3>Últimos Días</h3>
-            <div class="history-grid">
-                ${renderLast7Days(stats)}
-            </div>
-            
-            ${isWin ? '<div class="win-msg">¡Felicidades!</div>' : ''}
-            
-            <button id="close-modal-btn" class="btn-primary" style="margin-top:20px">Cerrar</button>
-        </div>
-    `;
-
-    modal.innerHTML = content;
+    const modal = document.getElementById('stats-modal');
     modal.classList.remove('hidden');
-    document.getElementById('close-modal-btn').onclick = () => modal.classList.add('hidden');
-}
 
-function renderLast7Days(stats) {
-    let html = '';
+    document.getElementById('stat-played').textContent = stats.gamesPlayed;
+    document.getElementById('stat-streak').textContent = stats.currentStreak;
+    document.getElementById('win-message').textContent = isWin ? "¡Impresionante! Lo has logrado." : "";
+
+    const historyGrid = document.getElementById('history-grid');
+    historyGrid.innerHTML = '';
+
     const today = new Date();
     for (let i = 6; i >= 0; i--) {
         const d = new Date(today);
-        d.setDate(d.getDate() - i);
+        d.setDate(today.getDate() - i);
         const dayStr = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
         const status = stats.history[dayStr];
 
-        let initial = d.toLocaleDateString('es-ES', { weekday: 'narrow' });
-        let cls = 'history-cell';
-        if (status === 'win') cls += ' win';
-        else if (status === 'loss') cls += ' loss';
-
-        html += `<div class="${cls}">${initial}</div>`;
+        const cell = document.createElement('div');
+        cell.className = 'history-cell';
+        if (status === 'win') cell.classList.add('win');
+        else if (status === 'loss') cell.classList.add('loss');
+        cell.textContent = d.toLocaleDateString('es-ES', { weekday: 'narrow' });
+        historyGrid.appendChild(cell);
     }
-    return html;
 }

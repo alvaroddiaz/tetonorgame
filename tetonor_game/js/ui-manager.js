@@ -16,9 +16,11 @@ export function renderBoard(gridItems) {
 
         cell.innerHTML = `
             <div class="result-display">${item.result}</div>
-            <div class="drop-zone" data-index="${idx}-top"></div>
-            <div class="operator-toggle" data-index="${idx}" data-op="?">?</div>
-            <div class="drop-zone" data-index="${idx}-bottom"></div>
+            <div class="cell-logic">
+                <div class="drop-zone" data-index="${idx}-top"></div>
+                <div class="operator-toggle" data-index="${idx}" data-op="?">?</div>
+                <div class="drop-zone" data-index="${idx}-bottom"></div>
+            </div>
         `;
         board.appendChild(cell);
 
@@ -40,21 +42,92 @@ export function renderInventory(operands) {
     const inv = document.getElementById('inventory');
     inv.innerHTML = '';
 
+    // Create an array of indices [0...15] and shuffle it using a seeded RNG
+    const seed = getDailySeed();
+    let h = 2166136261 >>> 0;
+    for (let i = 0; i < seed.length; i++) h = Math.imul(h ^ seed.charCodeAt(i), 16777619);
+
+    // Simple mulberry32 for this specific shuffle
+    const rng = (function (a) {
+        return function () {
+            var t = a += 0x6D2B79F5;
+            t = Math.imul(t ^ t >>> 15, t | 1);
+            t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+            return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        }
+    })(h);
+
+    // Pick a count between 6 and 9
+    const hiddenCount = Math.floor(rng() * 4) + 6; // 6, 7, 8, or 9
+
+    // All indices except the last one (operands.length - 1)
+    const candidates = Array.from({ length: operands.length - 1 }, (_, i) => i);
+
+    // Shuffle candidates
+    for (let i = candidates.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+    }
+
+    // Pick first 'hiddenCount' indices, but ensure no more than 2 consecutive are hidden
+    const hiddenIndices = new Set();
+    let hiddenCountLeft = hiddenCount;
+
+    // Use candidates as the sequence to check for clumps
+    // candidates is already shuffled. We'll pick from it but check against operands order.
+    // However, operands.forEach uses id [0...15]. Let's pick and then fix.
+    const tempIndices = new Set(candidates.slice(0, hiddenCount));
+
+    // Convert to sorted array of hidden indices to check neighbors
+    const finalHidden = new Set();
+    const allIndices = Array.from({ length: operands.length - 1 }, (_, i) => i);
+
+    // We'll iterate through all indices and hide if they were in tempIndices 
+    // AND don't create a clump of 3.
+    let consecutiveCount = 0;
+    const pickedFromCandidates = new Set(tempIndices);
+
+    allIndices.forEach(id => {
+        if (pickedFromCandidates.has(id)) {
+            if (consecutiveCount < 2) {
+                finalHidden.add(id);
+                consecutiveCount++;
+            } else {
+                // Too many consecutive. Try to move this hidden status to the next available non-clumping candidate.
+                // For simplicity in a seeded environment, we just don't hide this one if it clumps.
+                consecutiveCount = 0;
+            }
+        } else {
+            consecutiveCount = 0;
+        }
+    });
+
+    // If we missed some due to clumping, try to fill back from the end of candidates
+    // until we reach hiddenCount or run out of safe spots.
+    if (finalHidden.size < hiddenCount) {
+        const remainingCandidates = candidates.slice(hiddenCount);
+        for (const candId of remainingCandidates) {
+            if (finalHidden.size >= hiddenCount) break;
+
+            // Check if adding candId creates a clump of 3
+            if (!finalHidden.has(candId - 1) || !finalHidden.has(candId - 2)) {
+                if (!finalHidden.has(candId + 1) || !finalHidden.has(candId + 2)) {
+                    finalHidden.add(candId);
+                }
+            }
+        }
+    }
+
+    const hiddenIndicesSet = finalHidden;
+
     operands.forEach((num, id) => {
         const token = document.createElement('div');
         token.className = 'number-token';
         token.dataset.id = id;
 
-        const seedStr = getDailySeed() + '-' + num + '-' + id;
-        let hash = 0;
-        for (let i = 0; i < seedStr.length; i++) {
-            hash = ((hash << 5) - hash) + seedStr.charCodeAt(i);
-            hash |= 0;
-        }
-        const rngVal = Math.abs(hash) % 100;
-        let isHidden = rngVal < 25;
+        let isHidden = hiddenIndicesSet.has(id);
 
-        // Never hide the last token
+        // EXTRA ROBUST GUARD: Never hide the last token
         if (id === operands.length - 1) {
             isHidden = false;
         }
